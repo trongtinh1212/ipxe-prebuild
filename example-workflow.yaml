@@ -19,10 +19,10 @@ jobs:
           path: ipxe
       - name: install ipxe build deps into container
         run: |
-          sudo apt update
-          sudo apt-get install -y -d -o Acquire::Retries=50 \
+          apt-get update
+          apt-get install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux \
-                           git build-essential zlib1g-dev binutils-dev \
+                           git build-essential liblzma-dev zlib1g-dev binutils-dev \
       - name: build ipxe
         run: |
           self_root="${GITHUB_WORKSPACE}/self"
@@ -32,22 +32,23 @@ jobs:
           #cp ${self_root}/ipxe_config/console.h ${ipxe_root}/src/config/
           cd ${ipxe_root}/src/
           #make bin-x86_64-efi/ipxe.efi EMBED=config.ipxe -j2
-          make bin/undionly.kpxe EMBED=embed
-          make bin/ipxe.pxe EMBED=embed
-          make bin/undionly.kkpxe EMBED=embed
-          make bin/intel.pxe EMBED=embed
-          make bin-x86_64-efi/ipxe.efi EMBED=embed
-          make bin-x86_64-efi/snponly.efi EMBED=embed
-          make bin-x86_64-efi/intel.efi EMBED=embed
+          make bin/undionly.kpxe EMBED=embed -j$(nproc)
+          make bin/ipxe.pxe EMBED=embed -j$(nproc)
+          make bin/undionly.kkpxe EMBED=embed -j$(nproc)
+          make bin-x86_64-efi/ipxe.efi EMBED=embed -j$(nproc)
+          make bin-x86_64-efi/snponly.efi EMBED=embed -j$(nproc)
           
       - name: upload BIOS binaries including an embedded script as artifact
         uses: actions/upload-artifact@v4
         with:
           name: BIOS
-          path: ${{ github.workspace }}/ipxe/src/bin/
+          path: ${{ github.workspace }}/ipxe/src/bin/undionly.kpxe
+          path: ${{ github.workspace }}/ipxe/src/bin/ipxe.pxe
+          path: ${{ github.workspace }}/ipxe/src/bin/undionly.kkpxe
 
       - name: upload 64 bit EFI binaries including an embedded script as artifact
         uses: actions/upload-artifact@v4
         with:
           name: 64bit-EFI
-          path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/
+          path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/snponly.efi
+          path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/ipxe.efi
