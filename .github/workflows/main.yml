@@ -37,20 +37,25 @@ jobs:
           make bin/undionly.kkpxe EMBED=embed -j$(nproc)
           make bin-x86_64-efi/ipxe.efi EMBED=embed -j$(nproc)
           make bin-x86_64-efi/snponly.efi EMBED=embed -j$(nproc)
-          
+
+      - name: Organize binaries into directories
+        run: |
+        mkdir -p ${{ github.workspace }}/artifacts/BIOS
+        mkdir -p ${{ github.workspace }}/artifacts/EFI
+        mv ${{ github.workspace }}/ipxe/src/bin/undionly.kpxe ${{ github.workspace }}/artifacts/BIOS/
+        mv ${{ github.workspace }}/ipxe/src/bin/ipxe.pxe ${{ github.workspace }}/artifacts/BIOS/
+        mv ${{ github.workspace }}/ipxe/src/bin/undionly.kkpxe ${{ github.workspace }}/artifacts/BIOS/
+        mv ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/snponly.efi ${{ github.workspace }}/artifacts/EFI/
+        mv ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/ipxe.efi ${{ github.workspace }}/artifacts/EFI/
+
       - name: upload BIOS binaries including an embedded script as artifact
         uses: actions/upload-artifact@v4
         with:
           name: BIOS
-          path: |
-            ${{ github.workspace }}/ipxe/src/bin/undionly.kpxe
-            ${{ github.workspace }}/ipxe/src/bin/ipxe.pxe
-            ${{ github.workspace }}/ipxe/src/bin/undionly.kkpxe
+          path: ${{ github.workspace }}/artifacts/BIOS/
 
       - name: upload 64 bit EFI binaries including an embedded script as artifact
         uses: actions/upload-artifact@v4
         with:
           name: 64bit-EFI
-          path: |
-            ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/snponly.efi
-            ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/ipxe.efi
+          path: ${{ github.workspace }}/artifacts/EFI/
