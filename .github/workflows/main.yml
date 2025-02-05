@@ -1,0 +1,54 @@
+on: [push] #foo
+jobs:
+  make-ipxe:
+    name: make ipxe
+    runs-on: ubuntu-22.04
+    container: docker://ubuntu:22.04
+    steps:
+      - name: checkout self/this
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: self
+      - name: checkout ipxe/ipxe github repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          #ref: v1.20.1 #try to go with latest
+          repository: ipxe/ipxe
+          path: ipxe
+      - name: install ipxe build deps into container
+        run: |
+          apt-get update
+          apt-get install -y -o Acquire::Retries=50 \
+                           mtools syslinux isolinux \
+                           git build-essential liblzma-dev zlib1g-dev binutils-dev \
+      - name: build ipxe
+        run: |
+          self_root="${GITHUB_WORKSPACE}/self"
+          ipxe_root="${GITHUB_WORKSPACE}/ipxe"
+          cp ${self_root}/ipxe_config/embed ${ipxe_root}/src/
+          #cp ${self_root}/ipxe_config/general.h ${ipxe_root}/src/config/
+          #cp ${self_root}/ipxe_config/console.h ${ipxe_root}/src/config/
+          cd ${ipxe_root}/src/
+          #make bin-x86_64-efi/ipxe.efi EMBED=config.ipxe -j2
+          make bin/undionly.kpxe EMBED=embed -j$(nproc)
+          make bin/ipxe.pxe EMBED=embed -j$(nproc)
+          make bin/undionly.kkpxe EMBED=embed -j$(nproc)
+          make bin-x86_64-efi/ipxe.efi EMBED=embed -j$(nproc)
+          make bin-x86_64-efi/snponly.efi EMBED=embed -j$(nproc)
+          
+      - name: upload BIOS binaries including an embedded script as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BIOS
+          path: ${{ github.workspace }}/ipxe/src/bin/undionly.kpxe
+          path: ${{ github.workspace }}/ipxe/src/bin/ipxe.pxe
+          path: ${{ github.workspace }}/ipxe/src/bin/undionly.kkpxe
+
+      - name: upload 64 bit EFI binaries including an embedded script as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 64bit-EFI
+          path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/snponly.efi
+          path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/ipxe.efi
