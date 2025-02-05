@@ -19,8 +19,8 @@ jobs:
           path: ipxe
       - name: install ipxe build deps into container
         run: |
-          apt update
-          apt-get install -y -d -o Acquire::Retries=50 \
+          apt-get update
+          apt-get install -y -o Acquire::Retries=50 \
                            mtools syslinux isolinux \
                            git build-essential zlib1g-dev binutils-dev \
       - name: build ipxe
