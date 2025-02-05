@@ -32,7 +32,6 @@ jobs:
           #cp ${self_root}/ipxe_config/console.h ${ipxe_root}/src/config/
           cd ${ipxe_root}/src/
           #make bin-x86_64-efi/ipxe.efi EMBED=config.ipxe -j2
-          make bin/undionly.kpxe EMBED=embed -j$(nproc)
           make bin/ipxe.pxe EMBED=embed -j$(nproc)
           make bin/undionly.kkpxe EMBED=embed -j$(nproc)
           make bin-x86_64-efi/ipxe.efi EMBED=embed -j$(nproc)
@@ -42,7 +41,6 @@ jobs:
         run: |
           mkdir -p ${{ github.workspace }}/artifacts/BIOS
           mkdir -p ${{ github.workspace }}/artifacts/EFI
-          cp bin/undionly.kpxe ${{ github.workspace }}/artifacts/BIOS/
           cp bin/ipxe.pxe ${{ github.workspace }}/artifacts/BIOS/
           cp bin/undionly.kkpxe ${{ github.workspace }}/artifacts/BIOS/
           cp bin-x86_64-efi/ipxe.efi ${{ github.workspace }}/artifacts/EFI/
