@@ -32,19 +32,19 @@ jobs:
           #cp ${self_root}/ipxe_config/console.h ${ipxe_root}/src/config/
           cd ${ipxe_root}/src/
           #make bin-x86_64-efi/ipxe.efi EMBED=config.ipxe -j2
-          make bin/ipxe.pxe EMBED=embed -j$(nproc) -C ipxe/src
-          make bin/undionly.kkpxe EMBED=embed -j$(nproc) -C ipxe/src
-          make bin-x86_64-efi/ipxe.efi EMBED=embed -j$(nproc) -C ipxe/src
-          make bin-x86_64-efi/snponly.efi EMBED=embed -j$(nproc) -C ipxe/src
+          make bin/ipxe.pxe EMBED=embed -j$(nproc)
+          make bin/undionly.kkpxe EMBED=embed -j$(nproc)
+          make bin-x86_64-efi/ipxe.efi EMBED=embed -j$(nproc)
+          make bin-x86_64-efi/snponly.efi EMBED=embed -j$(nproc)
 
       - name: Organize binaries into directories
         run: |
           mkdir -p ${{ github.workspace }}/artifacts/BIOS
           mkdir -p ${{ github.workspace }}/artifacts/EFI
-          cp ipxe/src/bin/ipxe.pxe ${{ github.workspace }}/artifacts/BIOS/
-          cp ipxe/src/bin/undionly.kkpxe ${{ github.workspace }}/artifacts/BIOS/
-          cp ipxe/src/bin-x86_64-efi/ipxe.efi ${{ github.workspace }}/artifacts/EFI/
-          cp ipxe/src/bin-x86_64-efi/snponly.efi ${{ github.workspace }}/artifacts/EFI/
+          cp bin/ipxe.pxe ${{ github.workspace }}/artifacts/BIOS/
+          cp bin/undionly.kkpxe ${{ github.workspace }}/artifacts/BIOS/
+          cp bin-x86_64-efi/ipxe.efi ${{ github.workspace }}/artifacts/EFI/
+          cp bin-x86_64-efi/snponly.efi ${{ github.workspace }}/artifacts/EFI/
 
       - name: upload BIOS binaries including an embedded script as artifact
         uses: actions/upload-artifact@v4
