@@ -40,13 +40,13 @@ jobs:
 
       - name: Organize binaries into directories
         run: |
-        mkdir -p ${{ github.workspace }}/artifacts/BIOS
-        mkdir -p ${{ github.workspace }}/artifacts/EFI
-        mv ${{ github.workspace }}/ipxe/src/bin/undionly.kpxe ${{ github.workspace }}/artifacts/BIOS/
-        mv ${{ github.workspace }}/ipxe/src/bin/ipxe.pxe ${{ github.workspace }}/artifacts/BIOS/
-        mv ${{ github.workspace }}/ipxe/src/bin/undionly.kkpxe ${{ github.workspace }}/artifacts/BIOS/
-        mv ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/snponly.efi ${{ github.workspace }}/artifacts/EFI/
-        mv ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/ipxe.efi ${{ github.workspace }}/artifacts/EFI/
+          mkdir -p ${{ github.workspace }}/artifacts/BIOS
+          mkdir -p ${{ github.workspace }}/artifacts/EFI
+          cp bin/undionly.kpxe ${{ github.workspace }}/artifacts/BIOS/
+          cp bin/ipxe.pxe ${{ github.workspace }}/artifacts/BIOS/
+          cp bin/undionly.kkpxe ${{ github.workspace }}/artifacts/BIOS/
+          cp bin-x86_64-efi/ipxe.efi ${{ github.workspace }}/artifacts/EFI/
+          cp bin-x86_64-efi/snponly.efi ${{ github.workspace }}/artifacts/EFI/
 
       - name: upload BIOS binaries including an embedded script as artifact
         uses: actions/upload-artifact@v4
