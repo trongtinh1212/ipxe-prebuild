@@ -33,10 +33,10 @@ jobs:
           #cp ${self_root}/ipxe_config/console.h ${ipxe_root}/src/config/
           cd ${ipxe_root}/src/
           #make bin/ipxe.pxe EMBED=embed -j$(nproc)
-          make bin/undionly.kpxe EMBED=embed -j$(nproc)
+          make bin/undionly.kpxe EMBED=embed-http -j$(nproc)
           #make bin/undionly.kkpxe EMBED=embed -j$(nproc)
           #make bin-x86_64-efi/ipxe.efi EMBED=embed -j$(nproc)
-          make bin-x86_64-efi/snp.efi EMBED=embed -j$(nproc)
+          make bin-x86_64-efi/snp.efi EMBED=embed-http -j$(nproc)
           #make bin-x86_64-efi/snponly.efi EMBED=embed -j$(nproc)
       - name: upload BIOS binaries including an embedded script as artifact
         uses: actions/upload-artifact@v4

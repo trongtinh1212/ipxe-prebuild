@@ -1,0 +1,55 @@
+#!ipxe
+
+set boot-url http://${next-server}/ipxe
+set menu-timeout 5000
+set submenu-timeout ${menu-timeout}
+
+isset ${menu-default} || set menu-default exit
+
+######## MAIN MENU ###################
+:start
+menu IPXE for MDT & PSD
+item
+item --gap -- ------------------------- HTTP Boot ------------------------------------------
+item wimboot Boot  HTTP for PSD x64
+item wimboot2 Boot HTTP MDT x64
+item exit       Exit 
+item --gap -- ------------------------- WDS TFTP Boot --------------------------------------
+item win-wds Windows Deployment Services
+item --gap -- ------------------------------ Advanced -------------------------------------
+item config       Configure settings
+item shell      Enter iPXE shell
+item reboot     Reboot
+choose --default wimboot --timeout 30000 target && goto ${target}
+
+:wimboot
+  kernel ${boot-url}/wimboot quiet
+  initrd ${boot-url}/BOOT/BCD         BCD
+  initrd ${boot-url}/BOOT/BOOT.SDI    BOOT.SDI
+  initrd ${boot-url}/SOURCES/PSD/BOOT.WIM BOOT.WIM
+  boot
+  
+:wimboot2
+  kernel ${boot-url}/wimboot quiet
+  initrd ${boot-url}/BOOT/BCD         BCD
+  initrd ${boot-url}/BOOT/BOOT.SDI    BOOT.SDI
+  initrd ${boot-url}/SOURCES/MDT/BOOT.WIM BOOT.WIM
+  boot
+
+:win-wds
+set next-server 192.168.100.220
+set filename boot\x64\wdsmgfw.efi
+chain tftp://192.168.100.220/boot%5Cx64%5Cwdsmgfw.efi
+
+:reboot
+reboot
+
+:config
+config
+goto start
+
+:shell
+echo Type exit to get the back to the menu
+shell
+set menu-timeout 0
+goto start
