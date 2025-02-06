@@ -5,5 +5,5 @@ dhcp && goto netboot || goto dhcperror
 prompt --key s --timeout 10000 DHCP failed, hit 's' for the iPXE shell; reboot in 10 seconds && shell || reboot
 
 :netboot
-chain --autofree http://${next-server}/ipxe ||
+chain --autofree http://${next-server}/ipxe/config.ipxe ||
 prompt --key s --timeout 10000 Chainloading failed, hit 's' for the iPXE shell; reboot in 10 seconds && shell || reboot
