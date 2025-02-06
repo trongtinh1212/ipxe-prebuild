@@ -28,20 +28,23 @@ jobs:
           self_root="${GITHUB_WORKSPACE}/self"
           ipxe_root="${GITHUB_WORKSPACE}/ipxe"
           cp ${self_root}/ipxe_config/embed ${ipxe_root}/src/
+          cp ${self_root}/ipxe_config/embed-http ${ipxe_root}/src/
           #cp ${self_root}/ipxe_config/general.h ${ipxe_root}/src/config/
           #cp ${self_root}/ipxe_config/console.h ${ipxe_root}/src/config/
           cd ${ipxe_root}/src/
-          make bin/ipxe.pxe EMBED=embed -j$(nproc)
+          #make bin/ipxe.pxe EMBED=embed -j$(nproc)
+          make bin/snp.pxe EMBED=embed-http -j$(nproc)
           #make bin/undionly.kkpxe EMBED=embed -j$(nproc)
-          make bin-x86_64-efi/ipxe.efi EMBED=embed -j$(nproc)
+          #make bin-x86_64-efi/ipxe.efi EMBED=embed -j$(nproc)
+          make bin-x86_64-efi/snp.efi EMBED=embed-http -j$(nproc)
           #make bin-x86_64-efi/snponly.efi EMBED=embed -j$(nproc)
       - name: upload BIOS binaries including an embedded script as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ipxe.pxe
-          path: ${{ github.workspace }}/ipxe/src/bin/ipxe.pxe
+          name: snp.pxe
+          path: ${{ github.workspace }}/ipxe/src/bin/snp.pxe
       - name: upload 64 bit EFI binaries including an embedded script as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ipxe.efi
-          path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/ipxe.efi
+          name: snp.efi
+          path: ${{ github.workspace }}/ipxe/src/bin-x86_64-efi/snp.efi
